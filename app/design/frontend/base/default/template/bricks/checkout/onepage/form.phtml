@@ -1,0 +1,13 @@
+<?php
+/* @var $model Bricks_Checkout_Model_Steps */
+$model = $this->getModel();
+?>
+<ul class="form-list">
+	<?php
+	/* @var $field Bricks_Checkout_Model_Fields */
+	foreach ( $model->getFields()->getItems() as $field ) {
+		$this->setFormField( $field );
+		echo $this->getTypeHtml( $field->getType() );
+	}
+	?>
+</ul>

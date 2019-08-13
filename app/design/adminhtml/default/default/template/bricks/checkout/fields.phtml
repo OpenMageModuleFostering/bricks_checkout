@@ -1,0 +1,28 @@
+<?php
+/**
+ * @see Bricks_Checkout_Block_Adminhtml_Edit_Fields
+ */
+?>
+<form action="<?php echo $this->getSaveUrl(); ?>" method="post" id="checkout-fields">
+	<div><input name="form_key" type="hidden" value="<?php echo Mage::getSingleton('core/session')->getFormKey() ?>" /></div>
+
+	<div class="entry-edit custom-options checkout-fields">
+		<div class="entry-edit-head">
+			<h4><?php echo Mage::helper('bricks_checkout')->__( 'Checkout Fields' ); ?></h4>
+			<div class="right">
+				<?php echo $this->getAddButtonHtml(); ?>
+				<?php echo $this->getSaveButtonHtml(); ?>
+			</div>
+		</div>
+
+		<div id="checkout_fields_container" class="box">
+			<div id="checkout_fields_container_top">
+				<?php echo $this->getChildHtml('fields') ?>
+			</div>
+		</div>
+	</div>
+</form>
+<script type="text/javascript">
+	varienWindowOnload(true);
+	editForm = new varienForm( 'checkout-fields' );
+</script>

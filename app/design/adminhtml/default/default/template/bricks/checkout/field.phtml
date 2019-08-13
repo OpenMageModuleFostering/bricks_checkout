@@ -1,0 +1,255 @@
+<?php
+
+/* @var Bricks_Checkout_Block_Adminhtml_Edit_Fields_Field $block */
+$block = $this;
+
+/* @var Bricks_Checkout_Helper_Data $helper $helper */
+$helper = Mage::helper('bricks_checkout');
+
+?>
+
+<?php echo $block->getTemplatesHtml(); ?>
+
+<?php ob_start(); ?>
+<div class="option-box" id="div_<?php echo $helper->getFieldId( '{{id}}' ); ?>">
+	<table class="option-header" cellpadding="0" cellspacing="0" id="<?php echo $helper->getFieldId( '{{id}}' ); ?>">
+		<input type="hidden" id="<?php echo $helper->getFieldId( '{{id}}_is_delete' ); ?>" name="<?php echo $helper->getFieldName( array( '{{id}}' , 'is_delete' ) ); ?>" value="" />
+		<input type="hidden" id="<?php echo $helper->getFieldId( '{{id}}_previous_type' ); ?>" name="<?php echo $helper->getFieldName( array( '{{id}}', 'previous_type' ) ); ?>" value="{{type}}" />
+		<input type="hidden" id="<?php echo $helper->getFieldId( '{{id}}_previous_group' ); ?>" name="<?php echo $helper->getFieldName( array( '{{id}}', 'previous_group' ) ); ?>" value="{{group}}" />
+		<input type="hidden" id="<?php echo $helper->getFieldId( '{{id}}_id' ); ?>" name="<?php echo $helper->getFieldName( array( '{{id}}', 'id' ) ); ?>" value="{{id}}" />
+		<input type="hidden" id="<?php echo $helper->getFieldId( '{{id}}_field_id' ); ?>" name="<?php echo $helper->getFieldName( array( '{{id}}', 'field_id' ) ); ?>" value="{{field_id}}" />
+
+		<thead>
+			<tr>
+				<th class="opt-title"><?php echo $helper->__( 'Title' ); ?></th>
+				<th class="opt-type"><?php echo $helper->__( 'Type' ); ?></th>
+				<th class="opt-req"><?php echo $helper->__( 'Required' ); ?></th>
+				<th class="opt-order"><?php echo $helper->__( 'Sort Order' ); ?></th>
+				<th class="a-right"><?php echo $block->jsQuoteEscape($block->getDeleteButtonHtml()) ?></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td><input type="text" class="required-entry input-text field-title" name="<?php echo $helper->getFieldName( array( '{{id}}', 'title' ) ); ?>" value="{{title}}" /></td>
+				<td><?php echo $block->getTypeSelectHtml(); ?></td>
+				<td><?php echo $block->getRequireSelectHtml() ?></td>
+				<td><input type="text" class="input-text validate-number" name="<?php echo $helper->getFieldName( array( '{{id}}', 'sort_order' ) ) ?>" value="{{sort_order}}" /></td>
+				<td>&nbsp;</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+<?php $tmpl = ob_get_clean(); ?>
+
+<script type="text/javascript">
+//<![CDATA[
+var firstStepTemplate = <?php echo Mage::helper('core')->jsonEncode( $tmpl ); ?>;
+
+var checkoutField = {
+	div: $('checkout_fields_container_top'),
+	templateSyntax : /(^|.|\r|\n)({{(\w+)}})/,
+    templateText : firstStepTemplate,
+    itemCount : 1,
+	add : function( data ) {
+		this.template = new Template(this.templateText, this.templateSyntax);
+
+		if( ! data.id ) {
+			data = {
+				id: this.itemCount,
+				type: '',
+				field_id: 0
+			};
+		} else {
+			this.itemCount = data.item_count;
+		}
+
+		Element.insert( this.div, { 'after' : this.template.evaluate(data) } );
+
+		// Set selected type
+		if ( data.type ) {
+			$A( $( '<?php echo $helper->getFieldId(); ?>' + data.id + '_type' ).options ).each( function ( option ) {
+				if ( option.value === data.type )
+					option.selected = true;
+			});
+		}
+
+		this.itemCount++;
+        this.bindRemoveButtons();
+        checkoutFieldType.bindSelectInputType();
+	},
+	remove : function( event ) {
+		var element = $( Event.findElement( event, 'div' ) );
+        if( element ) {
+            $( element.readAttribute( 'id' ).sub('div_', '') + '_' + 'is_delete' ).value = '1';
+            element.addClassName( 'no-display' );
+            element.addClassName( 'ignore-validate' );
+            element.hide();
+        }
+	},
+	bindRemoveButtons : function() {
+		var buttons = $$( 'div.checkout-fields .delete-checkout-field' );
+		for ( var i = 0; i < buttons.length; i++ ) {
+			if ( ! $(buttons[i]).binded ) {
+				$( buttons[i] ).binded = true;
+				Event.observe( buttons[i], 'click', this.remove.bind( this ) );
+			}
+		}
+
+		var inputs = $$( 'div.checkout-fields button', 'div.checkout-fields input', 'div.checkout-fields select', 'div.checkout-fields textarea');
+		inputs.each( function( el ) { Event.observe( el, 'change', el.setHasChanges.bind( el ) );  } );
+	}
+};
+
+var checkoutFieldType = {
+	templateSyntax : /(^|.|\r|\n)({{(\w+)}})/,
+	loadStepTwo : function( event ) {
+		var element = $(Event.findElement(event, 'select'));
+
+		var group = '';
+        var previousGroupElm = $(element.readAttribute('id').sub('_type', '_previous_group'));
+
+		switch(element.getValue()){
+			case 'field':
+            case 'area':
+                template = FieldTemplateText;
+                group = 'text';
+                break;
+
+			case 'drop_down':
+            case 'radio':
+            case 'checkbox':
+                template = FieldTemplateSelect;
+                group = 'select';
+                break;
+		}
+
+		if ( previousGroupElm.getValue() != group ) {
+			if ($(element.readAttribute('id')+'_'+previousGroupElm.getValue())) {
+                formElm = $(element.readAttribute('id')+'_'+previousGroupElm.getValue()).descendants();
+                formElm.each(function(elm){
+                    if (elm.tagName == 'input' || elm.tagName == 'select') {
+                        elm.name = '__delete__'+elm.readAttribute('name');
+                    }
+                });
+
+                $(element.readAttribute('id')+'_'+previousGroupElm.getValue()).addClassName('no-display');
+                $(element.readAttribute('id')+'_'+previousGroupElm.getValue()).addClassName('ignore-validate');
+                $(element.readAttribute('id')+'_'+previousGroupElm.getValue()).hide();
+            }
+
+            previousGroupElm.value = group;
+
+			if ($(element.readAttribute('id')+'_'+group)) {
+                formElm = $(element.readAttribute('id')+'_'+group).descendants();
+                formElm.each(function(elm){
+                    if (elm.match('input') || elm.match('select')) {
+                        elm.name = elm.readAttribute('name').sub('__delete__', '');
+                    }
+                });
+                $(element.readAttribute('id')+'_'+group).removeClassName('no-display');
+                $(element.readAttribute('id')+'_'+group).removeClassName('ignore-validate');
+                $(element.readAttribute('id')+'_'+group).show();
+
+            } else {
+				template = '<div id="'+element.readAttribute('id')+'_'+group+'" class="grid tier form-list">'+template+'</div><div id="'+element.readAttribute('id')+'_'+group+'_advice"></div';
+                this.secondTemplate = new Template(template, this.templateSyntax);
+
+				data = {};
+                if (!data.field_id) {
+                    data = {};
+                    data.field_id = $(element.readAttribute('id').sub('_type', '_id')).getValue();
+                }
+
+                Element.insert(element.readAttribute('id').sub('_type', ''), {'after':this.secondTemplate.evaluate(data)});
+
+                switch(element.getValue()){
+                    case 'drop_down':
+                    case 'radio':
+                    case 'checkbox':
+                        selectFieldType.bindAddButton();
+                        break;
+                }
+			}
+		}
+	},
+	addDataToValues : function( data ) {
+		switch(data.type){
+            case 'field':
+            case 'area':
+                template = FieldTemplateText;
+                group = 'text';
+                break;
+            case 'drop_down':
+            case 'radio':
+            case 'checkbox':
+                template = FieldTemplateSelect;
+                group = 'select';
+                break;
+        }
+
+		$('<?php echo $helper->getFieldId() ?>'+data.id+'_previous_group').value = group;
+
+		template = '<div id="<?php echo $helper->getFieldId() ?>{{id}}_type_'+group+'" class="grid tier form-list">'+template+'</div><div id="<?php echo $helper->getFieldId() ?>{{id}}_type_'+group+'_advice"></div>';
+
+		this.secondTemplate = new Template(template, this.templateSyntax);
+
+		Element.insert($('<?php echo $helper->getFieldId() ?>'+data.field_id), {'after':this.secondTemplate.evaluate(data)});
+
+		switch(data.type){
+            case 'drop_down':
+            case 'radio':
+            case 'checkbox':
+                data.fieldValues.each(function(value) {
+                    selectFieldType.add(value);
+                });
+                selectFieldType.bindAddButton();
+                break;
+        }
+
+		if (data.is_require) {
+            $A($('<?php echo $helper->getFieldId() ?>'+data.id+'_is_require').options).each(function(option){
+                if (option.value==data.is_require) option.selected = true;
+            });
+        }
+
+		if (data.price_type) {
+            $A($('<?php echo $helper->getFieldId() ?>'+data.field_id+'_price_type').options).each(function(option){
+                if (option.value==data.price_type) option.selected = true;
+            });
+        }
+	},
+	bindSelectInputType : function() {
+		var types = $$('.select-checkout-field-type');
+        for(var i=0;i<types.length;i++){
+            if(!$(types[i]).binded){
+                $(types[i]).binded = true;
+                Event.observe(types[i], 'change', function(event){
+                    checkoutFieldType.loadStepTwo(event);
+                });
+            }
+        }
+	}
+};
+
+checkoutField.bindRemoveButtons();
+
+if($('<?php echo $this->getAddButtonId() ?>')){
+    Event.observe('<?php echo $this->getAddButtonId() ?>', 'click', checkoutField.add.bind(checkoutField));
+}
+
+//validation for selected input type
+Validation.addAllThese([
+    ['required-field-select', <?php echo $this->helper('core')->jsonEncode($helper->__('Select type of option')) ?>, function(v, elm) {
+        if (elm.getValue() == '') {
+            return false;
+        }
+        return true;
+}]]);
+
+<?php foreach ($this->getFieldValues() as $_value): ?>
+    checkoutField.add(<?php echo $_value->toJson() ?>);
+    checkoutFieldType.addDataToValues(<?php echo $_value->toJson() ?>);
+<?php endforeach; ?>
+
+//]]>
+</script>

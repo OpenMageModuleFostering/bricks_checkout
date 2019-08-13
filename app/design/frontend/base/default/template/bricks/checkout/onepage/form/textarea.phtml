@@ -1,0 +1,12 @@
+<?php $model = $this->getFormField(); ?>
+<li class="wide">
+	<label for="field-<?php echo $model->getId(); ?>" <?php if ( $model->getIsRequire() ) { ?>class="required"<?php } ?>>
+		<?php if ( $model->getIsRequire() ): ?>
+		<em>*</em>
+		<?php endif; ?>
+		<?php echo $model->getTitle(); ?>
+	</label>
+	<div class="input-box">
+		<textarea title="<?php echo $model->getTitle(); ?>" name="<?php echo $this->getFormFieldName(); ?>" id="field-<?php echo $model->getId(); ?>" class="input-text<?php if (  $model->getIsRequire() ) echo ' required-entry'; ?>" cols="30" rows="10"><?php echo $this->getFieldSavedValue(); ?></textarea>
+	</div>
+</li>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<modules>
+		<Bricks_Checkout>
+			<active>true</active>
+			<codePool>community</codePool>
+		</Bricks_Checkout>
+	</modules>
+</config>

@@ -1,0 +1,30 @@
+<?php
+/* @var $model Bricks_Checkout_Model_Field */
+$model = $this->getFormField();
+$saved = $this->getFieldSavedValue();
+$baseName = $this->getFormFieldName();
+$required = ( $model->getIsRequire() ) ? 'required-entry' : false;
+?>
+<li class="control" <?php if ( $model->getIsRequire() ) { ?>class="required"<?php } ?>>
+	<dl>
+		<dt>
+			<label>
+				<?php echo $model->getTitle(); ?>
+				<?php if ( $model->getIsRequire() ): ?>
+				<em>*</em>
+				<?php endif; ?>
+			</labael>
+		</dt>
+
+		<dd>
+			<ul>
+				<?php foreach ( $model->getValues()->getData() as $option ): ?>
+					<li>
+						<input <?php if ( $saved === $option['field_value_id'] ) { ?>checked<?php } ?> value="<?php echo $option['field_value_id']; ?>" type="radio" id="field-<?php echo $model->getId(); ?>-<?php echo $option['field_value_id']; ?>" class="checkbox" name="<?php echo $baseName; ?>" />
+						<label for="field-<?php echo $model->getId(); ?>-<?php echo $option['field_value_id']; ?>"><?php echo $option['title']; ?></label>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+		</dd>
+	</dl>
+</li>

@@ -1,0 +1,16 @@
+{
+    "name": "OpenMageModuleFostering/Bricks_Checkout",
+    "type": "magento-module",
+    "license": "n/a",
+    "homepage": "",
+    "description": "N/A",
+    "authors": [
+    {
+        "name": "Adam Hodson",
+        "email": "adam@bricksandmortarweb.com"
+    }
+],
+    "suggest": {
+        "magento-hackathon/magento-composer-installer": "*"
+    }
+}

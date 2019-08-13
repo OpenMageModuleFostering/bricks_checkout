@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+	<adminhtml_checkout_admin_index>
+		<reference name="content">
+			<block type="bricks_checkout/adminhtml_steps" name="checkout_steps"></block>
+		</reference>
+	</adminhtml_checkout_admin_index>
+
+	<adminhtml_checkout_admin_edit>
+		<reference name="left">
+			<block type="bricks_checkout/adminhtml_tabs" name="admin.bricks.checkout.steps.tabs"></block>
+		</reference>
+
+		<reference name="content">
+			<block type="bricks_checkout/adminhtml_edit" name="admin.bricks.checkout.steps.edit"></block>
+		</reference>
+	</adminhtml_checkout_admin_edit>
+
+	<adminhtml_checkout_admin_grid>
+		<block type="core/text_list" name="root" output="toHtml">
+			<block type="bricks_checkout/adminhtml_grid" name="admin.bricks.checkout.steps"></block>
+		</block>
+	</adminhtml_checkout_admin_grid>
+
+	<adminhtml_checkout_admin_fields>
+		<reference name="left">
+			<block type="bricks_checkout/adminhtml_tabs" name="admin.bricks.checkout.steps.tabs"></block>
+		</reference>
+
+		<reference name="content">
+			<block type="bricks_checkout/adminhtml_edit_fields" name="admin.bricks.checkout.steps.fields" template="bricks/checkout/fields.phtml">
+				<block type="bricks_checkout/adminhtml_edit_fields_field" name="fields" template="bricks/checkout/field.phtml"></block>
+			</block>
+		</reference>
+	</adminhtml_checkout_admin_fields>
+
+	<adminhtml_sales_order_view>
+		<reference name="sales_order_tabs">
+			<action method="addTab">
+				<name>custom_steps_data</name>
+				<block>bricks_checkout/adminhtml_order_data</block>
+			</action>
+		</reference>
+	</adminhtml_sales_order_view>
+</layout>

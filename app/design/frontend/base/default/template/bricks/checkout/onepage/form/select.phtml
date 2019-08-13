@@ -1,0 +1,20 @@
+<?php
+$model = $this->getFormField();
+$saved = $this->getFieldSavedValue();
+?>
+<li class="wide">
+	<label for="field-<?php echo $model->getId(); ?>" <?php if ( $model->getIsRequire() ) { ?>class="required"<?php } ?>>
+		<?php if ( $model->getIsRequire() ): ?>
+		<em>*</em>
+		<?php endif; ?>
+		<?php echo $model->getTitle(); ?>
+	</label>
+
+	<div class="input-box">
+		<select name="<?php echo $this->getFormFieldName(); ?>" id="field-<?php echo $model->getId(); ?>">
+			<?php foreach ( $model->getValues()->getData() as $option ): ?>
+				<option <?php if ( $option['field_value_id'] == $saved ) { ?>selected<?php } ?> value="<?php echo $option['field_value_id'] ?>"><?php echo $option['title']; ?></option>
+			<?php endforeach; ?>
+		</select>
+	</div>
+</li>

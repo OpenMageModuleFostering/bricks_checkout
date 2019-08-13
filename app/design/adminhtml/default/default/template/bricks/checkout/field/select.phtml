@@ -1,0 +1,128 @@
+<?php
+/**
+ * @see Bricks_Checkout_Block_Adminhtml_Edit_Fields_Type_Select
+ */
+
+/* @var Bricks_Checkout_Helper_Data $helper */
+$helper = Mage::helper('bricks_checkout');
+?>
+
+<?php ob_start(); ?>
+<table class="border" cellpadding="0" cellspacing="0">
+	<input type="hidden" class="required-field-select-type-rows" name="validation_{{field_id}}_result" value="" />
+	<thead>
+		<tr class="headings">
+			<th><?php echo $helper->__( 'Title' ); ?></th>
+			<th><?php echo $helper->__( 'Price' ); ?></th>
+			<th>&nbsp;</th>
+		</tr>
+	</thead>
+
+	<tbody id="select_field_type_row_{{field_id}}"></tbody>
+
+	<tfoot>
+		<tr>
+			<td colspan="100" class="a-right"><?php echo $this->getAddButtonHtml(); ?></td>
+		</tr>
+	</tfoot>
+</table>
+<?php $tmplSelect = ob_get_clean(); ?>
+
+<?php ob_start(); ?>
+<tr id="<?php echo $helper->getFieldId('{{id}}_select_{{select_id}}'); ?>">
+	<td>
+		<input type="hidden" name="<?php echo $helper->getFieldName( array( '{{id}}', 'values', '{{select_id}}', 'field_value_id' ) ); ?>" value="{{field_value_id}}">
+		<input type="hidden" id="<?php echo $helper->getFieldId( '{{id}}_select_{{select_id}}_is_delete'); ?>" name="<?php echo $helper->getFieldName( array( '{{id}}', 'values', '{{select_id}}', 'is_delete' ) ); ?>" value="">
+		<input type="text" class="required-entry input-text select-type-title" id="<?php echo $helper->getFieldId('{{id}}_select_{{select_id}}_title'); ?>" name="<?php echo $helper->getFieldName( array( '{{id}}', 'values', '{{select_id}}', 'title' ) ); ?>" value="{{title}}" />
+	</td>
+	<td>
+		<input type="text" class="input-text validate-number field-option-price" id="<?php echo $helper->getFieldId('{{id}}_select_{{select_id}}_price'); ?>" name="<?php echo $helper->getFieldName( array( '{{id}}', 'values', '{{select_id}}', 'price' ) ); ?>" value="{{price}}" />
+	</td>
+	<td class="last"><span title="Delete row"><?php echo $this->getDeleteButtonHtml() ?></span></td>
+</tr>
+<?php $tmplSelectRow = ob_get_clean(); ?>
+<script type="text/javascript">
+//[<![CDATA[
+FieldTemplateSelect    = <?php echo Mage::helper('core')->jsonEncode( $tmplSelect ); ?>;
+FieldTemplateSelectRow = <?php echo Mage::helper('core')->jsonEncode( $tmplSelectRow ); ?>;
+
+selectFieldType = {
+	div: 'select_field_type_row',
+	itemCount : 0,
+	templateSyntax : /(^|.|\r|\n)({{(\w+)}})/,
+	templateText : FieldTemplateSelectRow,
+	add : function(data) {
+		this.template = new Template(this.templateText, this.templateSyntax);
+		if (data.target || data.srcElement) { //data is Event (work in IE and Firefox)
+			element = $(Event.findElement(data, 'button'));
+			fieldId = element.readAttribute('id').sub('add_select_row_button_', '');
+			data = {};
+			data.field_value_id = '-1';
+			data.select_id = this.itemCount;
+		} else {
+			fieldId = data.field_id;
+			data.select_id = data.field_value_id;
+			this.itemCount = data.item_count;
+		}
+
+		data.id = fieldId;
+
+		Element.insert($(this.div+'_'+data.id), {'bottom':this.template.evaluate(data)});
+
+		if ( data.price_type ) {
+			$A( $( '<?php echo $helper->getFieldId(); ?>' + data.id + '_select_' + data.select_id + '_price_type'  ).options ).each( function( option ) {
+                if ( option.value === data.price_type )
+					option.selected = true;
+            });
+		}
+
+		this.itemCount++;
+        this.bindRemoveButtons();
+	},
+	remove : function(event){
+		var element = $( Event.findElement(event, 'tr') );
+		if ( element ) {
+			$( element.readAttribute('id')+'_is_delete' ).value = '1';
+			element.addClassName('no-display');
+            element.addClassName('ignore-validate');
+            element.hide();
+		}
+	},
+	bindRemoveButtons : function() {
+		var buttons = $$('.delete-select-row');
+		for(var i=0;i<buttons.length;i++){
+            if(!$(buttons[i]).binded){
+                $(buttons[i]).binded = true;
+                Event.observe(buttons[i], 'click', this.remove.bind(this));
+            }
+        }
+	},
+	bindAddButton : function() {
+		var buttons = $$('.add-select-row');
+        for(var i=0;i<buttons.length;i++){
+            if(!$(buttons[i]).binded){
+                $(buttons[i]).binded = true;
+                Event.observe(buttons[i], 'click', this.add.bind(this));
+            }
+        }
+	}
+};
+
+selectFieldType.bindRemoveButtons();
+
+Validation.addAllThese([
+    ['required-field-select-type-rows', <?php echo $this->helper('core')->jsonEncode($helper->__('Please add rows to option.')); ?>, function(v, elm) {
+            var optionContainerElm = elm.up('div.grid');
+            var selectTypesFlag = false;
+            selectTypeElements = $$('#'+optionContainerElm.id+' .select-type-title');
+            selectTypeElements.each(function(elm){
+                if (elm.id && elm.up('tr').visible()) {
+                    selectTypesFlag = true;
+                }
+            });
+            elm.advaiceContainer = optionContainerElm.id+'_advice';
+        return selectTypesFlag;
+}]]);
+
+//]]>
+</script>

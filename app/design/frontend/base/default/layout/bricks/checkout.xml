@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+	<bricks_checkout_step>
+		<block type="bricks_checkout/onepage_step_form" name="bricks_checkout_form" output="toHtml" template="bricks/checkout/onepage/form.phtml">
+			<block type="bricks_checkout/onepage_step_form" name="field" ouput="toHtml" template="bricks/checkout/onepage/form/text.phtml"></block>
+			<block type="bricks_checkout/onepage_step_form" name="area" ouput="toHtml" template="bricks/checkout/onepage/form/textarea.phtml"></block>
+			<block type="bricks_checkout/onepage_step_form" name="drop_down" ouput="toHtml" template="bricks/checkout/onepage/form/select.phtml"></block>
+			<block type="bricks_checkout/onepage_step_form" name="checkbox" ouput="toHtml" template="bricks/checkout/onepage/form/checkbox.phtml"></block>
+			<block type="bricks_checkout/onepage_step_form" name="radio" ouput="toHtml" template="bricks/checkout/onepage/form/radio.phtml"></block>
+		</block>
+	</bricks_checkout_step>
+
+	<sales_order_view>
+		<reference name="order_totals">
+			<block type="bricks_checkout/order_view" name="custom.checkout.data"></block>
+		</reference>
+	</sales_order_view>
+
+	<sales_order_creditmemo>
+		<reference name="creditmemo_totals">
+			<block type="bricks_checkout/order_view" name="custom.checkout.data"></block>
+		</reference>
+	</sales_order_creditmemo>
+
+	<sales_order_invoice>
+		<reference name="invoice_totals">
+			<block type="bricks_checkout/order_view" name="custom.checkout.data"></block>
+		</reference>
+	</sales_order_invoice>
+
+	<sales_order_print>
+		<reference name="order_totals">
+			<block type="bricks_checkout/order_view" name="custom.checkout.data"></block>
+		</reference>
+	</sales_order_print>
+
+	<sales_order_printinvoice>
+		<reference name="invoice_totals">
+			<block type="bricks_checkout/order_view" name="custom.checkout.data"></block>
+		</reference>
+	</sales_order_printinvoice>
+
+	<sales_order_printcreditmemo>
+		<reference name="creditmemo_totals">
+			<block type="bricks_checkout/order_view" name="custom.checkout.data"></block>
+		</reference>
+	</sales_order_printcreditmemo>
+</layout>

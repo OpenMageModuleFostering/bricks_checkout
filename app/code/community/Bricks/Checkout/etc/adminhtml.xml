@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<menu>
+		<system>
+			<children>
+				<bricks_checkout translate="title" module="bricks_checkout">
+					<title>Custom Onepage Checkout</title>
+					<action>adminhtml/checkout_admin/</action>
+					<sort_order>100</sort_order>
+				</bricks_checkout>
+			</children>
+		</system>
+	</menu>
+
+	<acl>
+		<resources>
+			<admin>
+				<children>
+					<system>
+						<children>
+							<bricks_checkout translate="title" module="bricks_checkout">
+								<title>Custom Onepage Checkout</title>
+							</bricks_checkout>
+						</children>
+					</system>
+				</children>
+			</admin>
+		</resources>
+	</acl>
+</config>

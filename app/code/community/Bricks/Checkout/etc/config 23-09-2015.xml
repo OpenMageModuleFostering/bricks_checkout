@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<modules>
+		<Bricks_Checkout>
+			<version>0.0.1</version>
+		</Bricks_Checkout>
+	</modules>
+
+	<!-- Global config -->
+	<global>
+		<blocks>
+			<bricks_checkout>
+				<class>Bricks_Checkout_Block</class>
+			</bricks_checkout>
+
+			<checkout>
+				<rewrite>
+					<onepage>Bricks_Checkout_Block_Onepage</onepage>
+				</rewrite>
+			</checkout>
+
+			<adminhtml>
+				<rewrite>
+					<sales_order_totals>Bricks_Checkout_Block_Adminhtml_Order_Totals</sales_order_totals>
+					<sales_order_invoice_totals>Bricks_Checkout_Block_Adminhtml_Order_Invoice</sales_order_invoice_totals>
+					<sales_order_creditmemo_totals>Bricks_Checkout_Block_Adminhtml_Order_Creditmemo</sales_order_creditmemo_totals>
+				</rewrite>
+			</adminhtml>
+		</blocks>
+
+		<events>
+			<sales_quote_save_after>
+				<observers>
+					<bricks_checkout>
+						<type>singleton</type>
+						<class>Bricks_Checkout_Model_Observer</class>
+						<method>saveQuoteAfter</method>
+					</bricks_checkout>
+				</observers>
+			</sales_quote_save_after>
+
+			<sales_quote_load_after>
+				<observers>
+					<bricks_checkout>
+						<type>singleton</type>
+						<class>Bricks_Checkout_Model_Observer</class>
+						<method>loadQuoteAfter</method>
+					</bricks_checkout>
+				</observers>
+			</sales_quote_load_after>
+
+			<sales_model_service_quote_submit_after>
+				<observers>
+					<bricks_checkout>
+						<type>singleton</type>
+						<class>Bricks_Checkout_Model_Observer</class>
+						<method>saveOrderAfter</method>
+					</bricks_checkout>
+				</observers>
+			</sales_model_service_quote_submit_after>
+
+			 <sales_order_load_after>
+				<observers>
+					<bricks_checkout>
+						<type>singleton</type>
+						<class>Bricks_Checkout_Model_Observer</class>
+						<method>loadOrderAfter</method>
+					</bricks_checkout>
+				</observers>
+			</sales_order_load_after>
+
+			<sales_quote_collect_totals_before>
+				<observers>
+					<bricks_checkout>
+						<type>singleton</type>
+						<class>Bricks_Checkout_Model_Observer</class>
+						<method>salesQuoteBeforeTotals</method>
+					</bricks_checkout>
+				</observers>
+			</sales_quote_collect_totals_before>
+
+			<paypal_prepare_line_items>
+				<observers>
+					<bricks_checkout>
+						<type>singleton</type>
+						<class>Bricks_Checkout_Model_Observer</class>
+						<method>updatePaypalTotal</method>
+					</bricks_checkout>
+				</observers>
+			</paypal_prepare_line_items>
+
+			<sales_order_save_after>
+                <observers>
+                    <always_nallavan_model_observer>
+                        <class>Bricks_Checkout_Model_Observer</class>
+                        <method>automaticallyInvoiceShipCompleteOrder</method>
+                    </always_nallavan_model_observer>
+                </observers>
+            </sales_order_save_after>
+		</events>
+
+		<helpers>
+			<bricks_checkout>
+				<class>Bricks_Checkout_Helper</class>
+			</bricks_checkout>
+		</helpers>
+
+		<models>
+			<bricks_checkout>
+				<class>Bricks_Checkout_Model</class>
+				<resourceModel>bricks_checkout_resource</resourceModel>
+			</bricks_checkout>
+
+			<bricks_checkout_resource>
+				<class>Bricks_Checkout_Model_Resource</class>
+				<entities>
+					<step><table>bricks_checkout_steps</table></step>
+					<field><table>bricks_checkout_fields</table></field>
+					<field_value><table>bricks_checkout_field_values</table></field_value>
+					<sale_quote><table>bricks_checkout_sale_quote</table></sale_quote>
+					<sale_quote_value><table>bricks_checkout_sale_quote_value</table></sale_quote_value>
+					<sale_order><table>bricks_checkout_sale_order</table></sale_order>
+					<sale_order_value><table>bricks_checkout_sale_order_value</table></sale_order_value>
+				</entities>
+			</bricks_checkout_resource>
+
+			<checkout>
+				<rewrite>
+					<type_onepage>Bricks_Checkout_Model_Onepage</type_onepage>
+				</rewrite>
+			</checkout>
+		</models>
+
+		<resources>
+			<bricks_checkout_setup>
+				<setup>
+					<module>Bricks_Checkout</module>
+					<class>Bricks_Checkout_Model_Resource_Setup</class>
+				</setup>
+			</bricks_checkout_setup>
+		</resources>
+
+		<bricks_checkout>
+			<fields>
+				<text translate="label" module="bricks_checkout">
+					<label>Text</label>
+					<render>bricks_checkout/adminhtml_edit_fields_type_text</render>
+					<types>
+						<field translate="label" module="bricks_checkout">
+							<label>Field</label>
+						</field>
+
+						<area translate="label" module="bricks_checkout">
+							<label>Area</label>
+						</area>
+					</types>
+				</text>
+				<select translate="label" module="bricks_checkout">
+					<label>Select</label>
+					<render>bricks_checkout/adminhtml_edit_fields_type_select</render>
+					<types>
+						<drop_down translate="label" module="bricks_checkout">
+							<label>Drop-down</label>
+						</drop_down>
+						<radio translate="label" module="bricks_checkout">
+							<label>Radio Buttons</label>
+						</radio>
+						<checkbox translate="label" module="bricks_checkout">
+							<label>Checkbox</label>
+						</checkbox>
+					</types>
+				</select>
+			</fields>
+		</bricks_checkout>
+
+		<sales>
+<!--			<quote>
+				<totals>
+					<bricks_checkout>
+						<class>bricks_checkout/sale_total_quote</class>
+						<after>subtotal</after>
+						<before>tax</before>
+					</bricks_checkout>
+				</totals>
+			</quote>-->
+
+			<order_invoice>
+				<totals>
+					<bricks_checkout>
+						<class>bricks_checkout/sale_total_invoice</class>
+						<after>subtotal</after>
+						<before>tax</before>
+					</bricks_checkout>
+				</totals>
+			</order_invoice>
+
+			<order_creditmemo>
+				<totals>
+					<bricks_checkout>
+						<class>bricks_checkout/sale_total_creditmemo</class>
+						<after>subtotal</after>
+						<before>tax</before>
+					</bricks_checkout>
+				</totals>
+			</order_creditmemo>
+		</sales>
+	</global>
+
+	<!-- Admin config -->
+	<admin>
+		<routers>
+			<adminhtml>
+				<args>
+					<use>admin</use>
+					<modules>
+						<Bricks_Checkout before="Mage_Adminhtml">Bricks_Checkout_Adminhtml</Bricks_Checkout>
+					</modules>
+				</args>
+			</adminhtml>
+		</routers>
+	</admin>
+
+	<!-- Adminhtml Config -->
+	<adminhtml>
+		<layout>
+			<updates>
+				<bricks_checkout>
+					<file>bricks/checkout.xml</file>
+				</bricks_checkout>
+			</updates>
+		</layout>
+	</adminhtml>
+
+	<!-- Frontend Config -->
+	<frontend>
+		<routers>
+			<checkout>
+				<args>
+					<modules>
+						<bricks_checkout before="Mage_Checkout">Bricks_Checkout</bricks_checkout>
+					</modules>
+				</args>
+			</checkout>
+		</routers>
+
+		<layout>
+			<updates>
+				<bricks_checkout><file>bricks/checkout.xml</file></bricks_checkout>
+			</updates>
+		</layout>
+	</frontend>
+
+	<!-- Default config -->
+<!--	<default>
+		<sales>
+			<total_sort>
+				<bricks_checkout>15</bricks_checkout>
+			</total_sort>
+		</sales>
+	</default>-->
+</config>
