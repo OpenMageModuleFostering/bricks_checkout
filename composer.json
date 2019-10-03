@@ -1,16 +1,19 @@
 {
-    "name": "OpenMageModuleFostering/Bricks_Checkout",
+    "name": "OpenMageModuleFostering\/Bricks_Checkout",
     "type": "magento-module",
-    "license": "n/a",
+    "license": "n\/a",
     "homepage": "",
-    "description": "N/A",
+    "description": "N\/A",
     "authors": [
-    {
-        "name": "Adam Hodson",
-        "email": "adam@bricksandmortarweb.com"
-    }
-],
+        {
+            "name": "Adam Hodson",
+            "email": "adam@bricksandmortarweb.com"
+        }
+    ],
     "suggest": {
-        "magento-hackathon/magento-composer-installer": "*"
-    }
+        "magento-hackathon\/magento-composer-installer": "*"
+    },
+    "keywords": [
+        "openmage-module"
+    ]
 }
